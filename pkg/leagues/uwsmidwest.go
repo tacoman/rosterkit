@@ -6,22 +6,8 @@ import (
 	"encoding/json"
 	"os"
 	"strings"
+	. "github.com/tacoman/rosterkit/pkg/models"
 )
-
-type Player struct {
-	Name	string `json:"name"`
-	SquadNumber	string `json:"squadNumber"`
-	Position	string `json:"position"`
-}
-type Foe struct {
-	Opponent	string `json:"opponent"`
-	Players		[]Player `json:"players"`
-}
-
-type FoeDef struct {
-	Url string
-	Name string
-}
 
 func handleFoe(foe FoeDef, outputChannel chan Foe) {
 	rosterCollector := colly.NewCollector(
@@ -74,7 +60,7 @@ func handleFoe(foe FoeDef, outputChannel chan Foe) {
 	fmt.Println("channel loaded")
 }
 
-func Scrape_uws() {
+func Scrape_uws_midwest() {
 	FoeDefs := make([]FoeDef, 6)
 	FoeDefs[0] = FoeDef{Url: "https://www.uwssoccer.com/roster/show/4813346?subseason=590879", Name: "AFC Ann Arbor"}
 	FoeDefs[1] = FoeDef{Url: "https://www.uwssoccer.com/roster/show/4813292?subseason=590879", Name: "Detroit Sun"}

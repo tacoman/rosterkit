@@ -3,8 +3,6 @@ package leagues
 import (
 	"fmt"
 	"github.com/gocolly/colly"
-	"encoding/json"
-	"os"
 	"strings"
 	. "github.com/tacoman/rosterkit/pkg/models"
 )
@@ -55,12 +53,10 @@ func handleFoe(foe FoeDef, outputChannel chan Foe) {
 
 	rosterCollector.Visit(foe.Url)
 	foeOutput := Foe{Opponent: foe.Name, Players: players}
-	fmt.Println("loading channel...")
 	outputChannel <- foeOutput
-	fmt.Println("channel loaded")
 }
 
-func Scrape_uws_midwest() {
+func Scrape_uws_midwest(leagueChannel chan []Foe) {
 	FoeDefs := make([]FoeDef, 6)
 	FoeDefs[0] = FoeDef{Url: "https://www.uwssoccer.com/roster/show/4813346?subseason=590879", Name: "AFC Ann Arbor"}
 	FoeDefs[1] = FoeDef{Url: "https://www.uwssoccer.com/roster/show/4813292?subseason=590879", Name: "Detroit Sun"}
@@ -77,18 +73,11 @@ func Scrape_uws_midwest() {
 		outputChannels = append(outputChannels, outputChannel)
 	}
 
-	f, _ := os.Create("uws-foes.json")
-	defer f.Close()
 
 	foesList := make([]Foe, len(FoeDefs))
     for idx, value := range outputChannels {
 	   output := <- value
        foesList[idx] = output
-    }
-	b, err := json.Marshal(foesList)
-	if err != nil {
-		fmt.Println("error:", err)
 	}
-	f.Write(b)
-	f.Sync()
+	leagueChannel <- foesList
 }
